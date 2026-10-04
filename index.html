@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Cargando...</title>
+
+    <!-- ====================================================
+         VISTA PREVIA AL COMPARTIR EL LINK (WhatsApp, Instagram, Facebook)
+         Se edita acá, una vez por cliente (WhatsApp no ejecuta JavaScript).
+         Para la imagen: subí una foto (1200x630) y descomentá las 2 líneas.
+         ===================================================== -->
+    <meta name="description" content="Pedí online.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mi Negocio">
+    <meta property="og:description" content="Pedí online.">
+    <!-- <meta property="og:image" content="https://TU-DOMINIO.com.ar/imagenes/portada.jpg"> -->
+    <!-- <meta property="og:url" content="https://TU-DOMINIO.com.ar/"> -->
+    <meta name="theme-color" content="#0f0f0f">
+
+    <link rel="stylesheet" href="tienda.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js?v=1"></script>
+    <script src="tienda.js?v=1" defer></script>
+</head>
+<body>
+    <div id="aviso-cierre" class="aviso-cierre" hidden></div>
+
+    <header class="hero">
+        <img id="logo" alt="" hidden>
+        <h1 id="nombre"></h1>
+        <p id="eslogan"></p>
+        <div id="estado" class="estado" hidden></div><br>
+        <a class="btn" href="#menu">Ver menú</a>
+    </header>
+
+    <nav id="chips" class="chips"></nav>
+    <main id="menu"></main>
+    <section id="info"></section>
+    <footer id="pie"></footer>
+
+    <div class="flotantes" id="flotantes"></div>
+    <button id="barra-carrito" class="barra-carrito" hidden></button>
+
+    <!-- Producto (extras / quitar / nota) -->
+    <div id="modal-prod" class="modal" hidden></div>
+    <!-- Carrito y datos del pedido -->
+    <div id="modal-carrito" class="modal" hidden></div>
+    <!-- Pedido confirmado -->
+    <div id="modal-ok" class="modal" hidden></div>
+    <div id="toast" class="toast" hidden></div>
+</body>
+</html>

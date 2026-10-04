@@ -1,0 +1,11 @@
+# Configuración de las funciones del servidor.
+# Las dos reciben llamadas que NO traen el token de un usuario de Supabase
+# (el pedido lo hace un cliente anónimo; el webhook lo llama Mercado Pago),
+# por eso se desactiva la verificación automática de JWT. La seguridad está
+# en el propio código de cada función.
+
+[functions.crear-pedido]
+verify_jwt = false
+
+[functions.webhook-mp]
+verify_jwt = false

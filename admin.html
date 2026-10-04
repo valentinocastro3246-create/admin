@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Panel de administración</title>
+    <link rel="stylesheet" href="admin.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js?v=1"></script>
+    <script src="admin.js?v=1" defer></script>
+</head>
+<body>
+
+    <!-- INICIO DE SESIÓN -->
+    <div id="login" class="login">
+        <div class="login-caja">
+            <h1>🔐 Panel de administración</h1>
+            <p>Ingresá con tu usuario.</p>
+            <div class="campo"><label>Email</label><input id="l-email" type="email" autocomplete="username"></div>
+            <div class="campo"><label>Contraseña</label><input id="l-pass" type="password" autocomplete="current-password"></div>
+            <div id="l-error" class="error" hidden></div>
+            <button class="btn bloque" id="l-entrar" data-acc="entrar">Entrar</button>
+        </div>
+    </div>
+
+    <!-- APLICACIÓN -->
+    <div id="app" hidden>
+        <header class="top">
+            <strong id="top-nombre">Panel</strong>
+            <span class="top-der">
+                <a id="top-tienda" href="index.html" target="_blank" rel="noopener">Ver tienda ↗</a>
+                <button class="btn chico sec" data-acc="salir">Salir</button>
+            </span>
+        </header>
+        <nav class="tabs" id="tabs">
+            <button data-acc="tab" data-tab="pedidos">📋 Pedidos <span class="badge" id="badge-pedidos" hidden></span></button>
+            <button data-acc="tab" data-tab="productos">📦 Productos</button>
+            <button data-acc="tab" data-tab="caja">💰 Caja</button>
+            <button data-acc="tab" data-tab="reportes">📊 Reportes</button>
+            <button data-acc="tab" data-tab="ajustes">⚙️ Ajustes</button>
+        </nav>
+        <main id="vista"><p class="vacio">Cargando...</p></main>
+    </div>
+
+    <div id="modal" class="modal" hidden></div>
+    <div id="toast" class="toast" hidden></div>
+</body>
+</html>

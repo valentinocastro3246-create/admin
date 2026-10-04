@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Seguimiento de pedido</title>
+    <link rel="stylesheet" href="tienda.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js?v=1"></script>
+</head>
+<body style="padding-bottom:30px">
+    <main style="max-width:520px;margin:0 auto;padding:30px 16px">
+        <div class="caja" id="caja">
+            <h3 id="titulo">Buscando tu pedido...</h3>
+            <p id="detalle"></p>
+        </div>
+        <p style="text-align:center;margin-top:18px"><a class="btn sec" href="index.html">Volver al menú</a></p>
+    </main>
+
+<script>
+(function () {
+    var CFG = window.PRO_CONFIG || {};
+    var $ = function (id) { return document.getElementById(id); };
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+    var money = function (n) { return "$" + Number(n || 0).toLocaleString("es-AR"); };
+    var id = new URLSearchParams(location.search).get("id");
+    var PASOS = [["pendiente", "Recibido"], ["confirmado", "Confirmado"], ["preparando", "Preparando"], ["listo", "Listo"], ["entregado", "Entregado"]];
+
+    if (!window.supabase || !CFG.SUPABASE_URL || !id) { $("titulo").textContent = "Pedido no encontrado"; $("detalle").textContent = "Revisá el enlace que recibiste."; return; }
+    var sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_CLAVE_PUBLICA);
+
+    sb.from("negocio").select("tema,nombre").eq("id", 1).single().then(function (r) {
+        if (!r.data) return;
+        document.title = "Tu pedido — " + (r.data.nombre || "");
+        var t = r.data.tema || {}, s = document.documentElement.style;
+        var m = { colorPrincipal: "--c-principal", colorTextoBoton: "--c-texto-boton", colorFondo: "--c-fondo", colorSuperficie: "--c-superficie", colorTexto: "--c-texto", colorTextoSuave: "--c-texto-suave" };
+        Object.keys(m).forEach(function (k) { if (t[k]) s.setProperty(m[k], t[k]); });
+    });
+
+    function pintar(p) {
+        var caja = $("caja");
+        if (!p) { caja.innerHTML = "<h3>Pedido no encontrado</h3><p>Revisá el enlace que recibiste.</p>"; return false; }
+        var idx = PASOS.map(function (x) { return x[0]; }).indexOf(p.estado);
+        var cancelado = p.estado === "cancelado";
+        var pago = p.pago_estado === "pagado" ? "✅ Pago confirmado"
+            : p.pago_estado === "reembolsado" ? "↩️ Pago reembolsado"
+            : p.metodo_pago === "mercadopago" ? "⏳ Esperando la confirmación del pago..."
+            : p.metodo_pago === "transferencia" ? "⏳ Pago por transferencia: pendiente de confirmar"
+            : "💵 Pagás en efectivo";
+        caja.innerHTML = "<h3>Pedido #" + esc(p.numero) + "</h3>" +
+            (cancelado ? '<div class="error">Este pedido fue cancelado.</div>' :
+                '<div class="pasos">' + PASOS.map(function (x, i) { return '<div class="paso' + (i <= idx ? " hecho" : "") + '">' + x[1] + "</div>"; }).join("") + "</div>") +
+            "<p><strong>" + pago + "</strong></p><br>" +
+            "<ul>" + (p.items || []).map(function (i) { return "<li><span>" + esc(i.cantidad) + " × " + esc(i.nombre) + "</span></li>"; }).join("") + "</ul>" +
+            '<p style="margin-top:10px"><strong>Total: ' + money(p.total) + "</strong></p>";
+        return !cancelado && p.estado !== "entregado";
+    }
+
+    function consultar() {
+        sb.rpc("seguimiento_pedido", { p_id: id }).then(function (r) {
+            var seguir = pintar(r.error ? null : r.data);
+            if (seguir) setTimeout(consultar, 10000);
+        });
+    }
+    consultar();
+})();
+</script>
+</body>
+</html>
